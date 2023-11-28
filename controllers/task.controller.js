@@ -28,7 +28,7 @@ const createTask = async (req, res) => {
     }
     const params = await req.body;
 
-    const newTask = await db.user.create({
+    const newTask = await db.task.create({
       data: {
         userId: id,
         ...params
@@ -38,8 +38,7 @@ const createTask = async (req, res) => {
         start_date: true,
         end_date: true,
         description: true,
-        priority: true,
-        fileUrl: true
+        priority: true
       }
     });
     return res.status(201).send({ message: "Task Created", task: newTask });
