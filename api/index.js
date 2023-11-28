@@ -1,9 +1,9 @@
 require("dotenv").config();
 const express = require("express");
-const userRoutes = require("./routes/user.route");
-const taskRoutes = require("./routes/task.route");
-const { protect, signin, signup } = require("./controllers/auth.controllers");
-const { getProjects } = require("./controllers/project.controller");
+const userRoutes = require("../routes/user.route");
+const taskRoutes = require("../routes/task.route");
+const { protect, signin, signup } = require("../controllers/auth.controllers");
+const { getProjects } = require("../controllers/project.controller");
 
 const app = express();
 
@@ -18,6 +18,12 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get("/", (_req, res) =>
+  res.status(200).json({
+    status: res.statusCode,
+    message: "Welcome to QT Test module api"
+  })
+);
 app.get("/server-status", (req, res) => {
   res.status(200).json({ message: "Server is up and running!" });
 });

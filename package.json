@@ -10,8 +10,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js",
-    "production": "node index.js",
+    "start": "nodemon app/index.js",
+    "production": "node app/index.js",
     "seed:projects": "npx prisma db seed",
     "postinstall": "prisma generate"
   },
