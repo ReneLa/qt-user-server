@@ -1,9 +1,9 @@
 require("dotenv").config();
 const express = require("express");
-const userRoutes = require("../routes/user.route");
-const taskRoutes = require("../routes/task.route");
-const { protect, signin, signup } = require("../controllers/auth.controllers");
-const { getProjects } = require("../controllers/project.controller");
+const userRoutes = require("./routes/user.route");
+const taskRoutes = require("./routes/task.route");
+const { protect, signin, signup } = require("./controllers/auth.controllers");
+const { getProjects } = require("./controllers/project.controller");
 
 const app = express();
 
