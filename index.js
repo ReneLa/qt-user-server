@@ -3,6 +3,7 @@ const express = require("express");
 const userRoutes = require("./routes/user.route");
 const taskRoutes = require("./routes/task.route");
 const { protect, signin, signup } = require("./controllers/auth.controllers");
+const { getProjects } = require("./controllers/project.controller");
 
 const app = express();
 
@@ -27,7 +28,9 @@ app.post("/signup", signup);
 
 app.use("/api", protect);
 app.use("/api/user", userRoutes);
-app.use("/api/task", taskRoutes);
+app.use("/api/tasks", taskRoutes);
+//fetch projects
+app.get("/api/projects", getProjects);
 
 const server = app.listen(PORT, () =>
   console.log(`

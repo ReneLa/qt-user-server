@@ -1,21 +1,15 @@
 const router = require("express").Router();
-const passport = require("passport");
 
-const {} = require("../controllers/task.controller");
+const {
+  getTasks,
+  createTask,
+  updateTask
+} = require("../controllers/task.controller");
 
-const decodeToken = require("../middlewares/auth/decodeToken");
-
-const requireAuth = passport.authenticate("jwt", { session: false }, null);
-
-router.use(requireAuth, decodeToken);
-
+router.get("/", getTasks);
 router.get("/:id");
-router.get("/");
-
-router.post("/");
-
+router.post("/", createTask);
+router.patch("/:id", updateTask);
 router.delete("/:id");
-
-router.patch("/:id/save");
 
 module.exports = router;

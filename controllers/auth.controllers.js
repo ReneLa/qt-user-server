@@ -40,6 +40,7 @@ const signup = async (req, res) => {
         password: hashedPassword
       },
       select: {
+        id: true,
         email: true,
         first_name: true,
         last_name: true,
@@ -48,7 +49,7 @@ const signup = async (req, res) => {
       }
     });
     const token = newToken(newUser);
-    return res.status(201).send({ user: { email }, token });
+    return res.status(201).send({ user: newUser, token });
   } catch (e) {
     console.log(e);
     return res.status(500).send({ message: "Server Error" }).end();
@@ -56,12 +57,12 @@ const signup = async (req, res) => {
 };
 
 const signin = async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).send({ message: "Need email and password" });
-  }
-
   try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).send({ message: "Need email and password" });
+    }
+
     const existingUser = await db.user.findUnique({
       where: {
         email
@@ -81,7 +82,14 @@ const signin = async (req, res) => {
     const token = newToken(existingUser);
 
     return res.status(200).send({
-      user: { username: existingUser.username, email: existingUser.email },
+      user: {
+        id: existingUser.id,
+        email: existingUser.email,
+        first_name: existingUser.first_name,
+        last_name: existingUser.last_name,
+        title: existingUser.title,
+        caption: existingUser.caption
+      },
       token
     });
   } catch (e) {
@@ -91,39 +99,40 @@ const signin = async (req, res) => {
 };
 
 const protect = async (req, res, next) => {
-  const bearer = req.headers.authorization;
-
-  if (!bearer || !bearer.startsWith("Bearer ")) {
-    return res.status(401).end();
-  }
-
-  const token = bearer.split("Bearer ")[1].trim();
-  let payload;
   try {
-    payload = await verifyToken(token);
+    const bearer = req.headers.authorization;
+
+    if (!bearer || !bearer.startsWith("Bearer ")) {
+      return res.status(401).end();
+    }
+
+    const token = bearer.split("Bearer ")[1].trim();
+
+    const payload = await verifyToken(token);
+
+    const user = await db.user.findUnique({
+      where: {
+        id: payload.id
+      },
+      select: {
+        id: true,
+        email: true,
+        first_name: true,
+        last_name: true,
+        title: true,
+        caption: true
+      }
+    });
+
+    if (!user) {
+      return res.status(401).send({ message: "Unauthorized user" }).end();
+    }
+
+    req.user = user;
+    next();
   } catch (e) {
     return res.status(401).end();
   }
-
-  const user = await db.user.findById({
-    where: {
-      id: payload.id
-    },
-    select: {
-      email: true,
-      first_name: true,
-      last_name: true,
-      title: true,
-      caption: true
-    }
-  });
-
-  if (!user) {
-    return res.status(401).send({ message: "Unauthorized user" }).end();
-  }
-
-  req.user = user;
-  next();
 };
 
 module.exports = { signin, signup, protect };
