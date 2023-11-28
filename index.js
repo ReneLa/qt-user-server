@@ -32,9 +32,9 @@ app.use("/api/tasks", taskRoutes);
 //fetch projects
 app.get("/api/projects", getProjects);
 
-const server = app.listen(PORT, () =>
+app.listen(PORT, () =>
   console.log(`
 🚀 Server ready at: http://localhost:${PORT}`)
 );
 
-module.export = server;
+module.exports = app;
