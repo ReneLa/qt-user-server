@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const userRoutes = require("./routes/user.route");
 const taskRoutes = require("./routes/task.route");
+const { protect, signin, signup } = require("./controllers/auth.controllers");
 
 const app = express();
 
@@ -20,8 +21,13 @@ app.get("/server-status", (req, res) => {
   res.status(200).json({ message: "Server is up and running!" });
 });
 
-app.use("/user", userRoutes);
-app.use("/task", taskRoutes);
+app.post("/signin", signin);
+app.post("/signup", signup);
+// router.post("/logout");
+
+app.use("/api", protect);
+app.use("/api/user", userRoutes);
+app.use("/api/task", taskRoutes);
 
 const server = app.listen(PORT, () =>
   console.log(`
