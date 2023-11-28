@@ -11,13 +11,13 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid()) @map("_id")
-  first_name String
-  last_name String
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  first_name String?
+  last_name String?
   email String @unique
   password String
-  title String
-  caption String
+  title String?
+  caption String?
 
   tasks Task[]
 
@@ -26,18 +26,18 @@ model User {
 }
 
 model Task {
-  id String @id @default(uuid()) @map("_id")
+  id String @id @default(auto()) @map("_id") @db.ObjectId
   name String
   start_date DateTime
   end_date DateTime
   description String
   priority String
-  fileUrl String
+  fileUrl String?
 
-  userId String
+  userId String @db.ObjectId
   user User @relation(fields: [userId], references: [id], onDelete:Cascade)
 
-  projectId String
+  projectId String @db.ObjectId
   project Project @relation(fields: [projectId], references: [id], onDelete:Cascade)
 
   createdAt DateTime @default(now())
@@ -48,7 +48,7 @@ model Task {
 
 }
 model Project {
-  id String @id @default(uuid()) @map("_id")
+  id String @id @default(auto()) @map("_id") @db.ObjectId
   name String
 
   tasks Task[]
